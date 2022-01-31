@@ -1,0 +1,46 @@
+version: '3'
+networks:
+        backend:
+services: 
+        nginx:
+                image: nginx:stable-alpine
+                container_name: nginx
+                ports:
+                      - "8000:80"
+                volumes:
+                      - ./src:/var/www
+                      - ./nginx/default.conf:/etc/nginc/conf.d/default.conf
+                depends_on:
+                      - php
+                #       - mysql
+                networks:
+                      - backend
+        # mysql:
+        #         image: mysql:5.7.29
+        #         container_name: mysql
+        #         restart: unless-stopped
+        #         tty: true #dastresi terminal azad bashe
+        #         ports: 
+        #               - "3306:3306"
+        #         environment:
+                        
+        #                 MYSQL_DATABSE: laravel
+        #                 MYSQL_USER: homestead
+        #                 MYSQL_PASSWORD: secret
+        #                 MYSQL_ROOT_PASSWORD: secret
+        #                 SERVICE_TAGS: dev
+        #                 SERVICE_NAME: mysql
+        #         networks:
+        #                 - backend
+        php:
+                build:
+                        context: .
+                        dockerfile: dockerfile
+                container_name: php
+                volumes: 
+                        - ./src:/var/www/html
+                ports:
+                        - "9000:9000"
+                networks:
+                        - backend
+
